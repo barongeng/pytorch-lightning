@@ -1,9 +1,24 @@
-from warnings import warn
+# Copyright The PyTorch Lightning team.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+import functools
+import importlib
+import queue as q
+import traceback
+from multiprocessing import Process
+from multiprocessing import Queue
 
-warn(
-    "`xla_device_utils` package has been renamed to `xla_device` since v1.2 and will be removed in v1.4",
-    DeprecationWarning
-)
+import torch
 
 XLA_AVAILABLE = importlib.util.find_spec("torch_xla") is not None
 #: define waiting time got checking TPU available in sec
@@ -47,10 +62,8 @@ class XLADeviceUtils:
     def _fetch_xla_device_type(device: torch.device) -> str:
         """
         Returns XLA device type
-
         Args:
             device: (:class:`~torch.device`): Accepts a torch.device type with a XLA device format i.e xla:0
-
         Return:
             Returns a str of the device hardware type. i.e TPU
         """
@@ -61,7 +74,6 @@ class XLADeviceUtils:
     def _is_device_tpu() -> bool:
         """
         Check if device is TPU
-
         Return:
             A boolean value indicating if the xla device is a TPU device or not
         """
@@ -74,7 +86,6 @@ class XLADeviceUtils:
     def xla_available() -> bool:
         """
         Check if XLA library is installed
-
         Return:
             A boolean value indicating if a XLA is installed
         """
@@ -84,7 +95,6 @@ class XLADeviceUtils:
     def tpu_device_exists() -> bool:
         """
         Runs XLA device check within a separate process
-
         Return:
             A boolean value indicating if a TPU device exists on the system
         """
